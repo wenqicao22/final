@@ -1,0 +1,32 @@
+.App {
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  background: grey;
+  color: white
+}
+
+.navList {
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  
+
+}
+
+.star-info h3 {
+  display: inline;
+  color: red;
+}
+
+#star-table{
+  width: 70%;
+  text-align: center;
+}
