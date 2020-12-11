@@ -41,11 +41,11 @@ router.put("/", (req, res) => {
           await newStar.save();
 
           var {name} = req.body
-          var username= name+ String(uniqid())
+          // var username= name+ String(uniqid())
           const password = String(uniqid())
           const hashedPassword = await bcrypt.hash(password, 10)
           const newUser = new user({
-              username:username,
+              username:name,
               password: hashedPassword,
               managerOrStar: "star"
           })
@@ -54,7 +54,7 @@ router.put("/", (req, res) => {
           res.send({
             message: {
               info: "Star added",
-              username: username,
+              username: name,
               password: password
             }
           })

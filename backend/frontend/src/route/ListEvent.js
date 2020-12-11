@@ -38,7 +38,7 @@ export default function ListEvent() {
         .then((res) => {
             setEvents(res.data)
         })
-    },[])
+    },[events])
     if (context.managerOrStar !== "manager") {
         return (
             <div className="non-admin">
@@ -85,50 +85,65 @@ export default function ListEvent() {
 
     return (
         <div className="container">
-           <h1>Event List</h1>
-           <div>
-               <input placeholder="Name Of The Event" type="text" onChange={(e) => setName(e.target.value)}/>
-               <input placeholder="MM/DD/YY" type="text" onChange={(e) => setTime(e.target.value)} />
-               <select id="star" name="star" onChange={updateStar}>
-                <option>Select A Star</option>
-                {
-                    data ? (
-                        data.map((star, index) => 
-                        <option value={data[index]["name"]} key={index}>
-                            {data[index]["name"]}
-                        </option>)
-                    ) : (
+           <h2>Event List</h2>
+           <div className="forms">
+               <ul>
+                    <li>
+                        <input placeholder="Name Of The Event" type="text" onChange={(e) => setName(e.target.value)}/>
+                    </li>
+                    <li>
+                        <input placeholder="MM/DD/YY" type="text" onChange={(e) => setTime(e.target.value)} />
+                    </li>
+                    <li>
+                        <select id="star" name="star" onChange={updateStar}>
+                            <option>Select A Star</option>
+                            {
+                                data ? (
+                                    data.map((star, index) => 
+                                    <option value={data[index]["name"]} key={index}>
+                                        {data[index]["name"]}
+                                    </option>)
+                                ) : (
+                                    <>
+                                    </>
+                                )
+                            }
+                    </select>
+                    </li>
+                    <li>
+                        <input type="submit" value="Add Event" onClick={addEvent} />
+                    </li>
+                    <li>
+                        {newEventList !==null && newEventList.length !== 0 ? (
                         <>
+                        {newEventList.map((event, index) => 
+                        <div className="star-info" key={index}>
+                            Event 
+                            <h3> {newEventList[index]["name"]}</h3> has been added! Name: <h3>{newEventList[index]["name"]}</h3>, Time: <h3>{newEventList[index]["time"]}</h3>. The star is <h3>{newEventList[index]["star"]}</h3>, status is <h3>{newEventList[index]["isAccepted"] === false? "Not accepted" : "Accepted"}</h3>
+                        </div>)}
                         </>
-                    )
-                }
-               </select>
-               <input type="submit" value="Add Event" onClick={addEvent} />
+                        ) : (
+                        <div>
+                            No new event added.
+                        </div>
+                        )
+                        }
+                    </li>
+               </ul>
             </div>
-            <div className="star-list">
-                {newEventList !==null && newEventList.length !== 0 ? (
-                    <>
-                    {newEventList.map((event, index) => 
-                    <div className="star-info" key={index}>
-                        Event 
-                        <h3> {newEventList[index]["name"]}</h3> has been added! Name: <h3>{newEventList[index]["name"]}</h3>, Time: <h3>{newEventList[index]["time"]}</h3>. The star is <h3>{newEventList[index]["star"]}</h3>, status is <h3>{newEventList[index]["isAccepted"]}</h3>
-                    </div>)}
-                    </>
-                ) : (
-                    <div>
-                        No new event added.
-                    </div>
-                )
-                }
+            
                 <div>
                     <h3>Event So Far:</h3>
-                        <table id="star-table">
-                            <tbody>
+                        <table id="event-table" className="tables">
+                            <thead>
                                 <tr>
                                     <th>Name Of Event</th>
                                     <th>Time</th>
                                     <th>Star</th>
+                                    <th>Accepted By Star?</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                             {events ? (events.map((p, index) => 
 
                                 <tr key={index} id={index}>
@@ -142,7 +157,7 @@ export default function ListEvent() {
                                         {p.star}
                                     </td>
                                     <td>
-                                        {p.isAccepted}
+                                        {p.isAccepted === false ? "No" : "Yes"}
                                     </td>
                                 
                                 </tr>
@@ -155,7 +170,7 @@ export default function ListEvent() {
                         </table>
                 </div>
                     
-            </div>
+            
         </div>
     )
 }

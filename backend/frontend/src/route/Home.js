@@ -8,14 +8,18 @@ function Home () {
    
         
   return (
-      <div>
+      <div className="container"> 
         {context? (
             <div>
+                <h2 className="home">
                 Welcome {context.username}
+                </h2>
             </div>
         ) : (
             <div>
+                <h2 className="home">
                 Welcome to star management app!
+                </h2>
             </div>
         )}
       </div>

@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd frontend && npm run build",
+    "install": "cd frontend && npm install",
+    "heroku-postbuild": "npm run install && npm run build",
     "start": "nodemon server.js"
   },
   "author": "",
@@ -22,6 +24,7 @@
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
     "uniqid": "^5.2.0"
   }
 }

@@ -28,12 +28,22 @@ function Register(props) {
 
 
   return (
-    <div className="App">
+    <div className="container">
       <div>
-        <h1>Register For Manager</h1>
-        <input required placeholder="username" onChange={(e) => setRegisterUsername(e.target.value)}/>
-        <input required type="password" placeholder="password" onChange={(e) => setregisterPassword(e.target.value)}/>
-        <button onClick={register}>Submit</button>
+        <h2>Register For Manager</h2>
+        <div className="forms">
+          <ul>
+            <li>
+              <input required placeholder="username" onChange={(e) => setRegisterUsername(e.target.value)}/>
+            </li>
+            <li>
+              <input required type="password" placeholder="password" onChange={(e) => setregisterPassword(e.target.value)}/>
+            </li>
+            <li>
+              <button onClick={register}>Submit</button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

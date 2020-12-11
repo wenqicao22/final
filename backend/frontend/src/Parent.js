@@ -9,7 +9,8 @@ import EditEvent from './route/EditEvent'
 import About from './route/About'
 import Home from './route/Home'
 import EditSchedule from './route/EditSchedule'
-import UpdatePassword from './route/UpdatePassword'
+import UpdateStar from './route/UpdateStar'
+import DetailPage from './route/DetailPage'
 import { myContext } from './route/Context';
 
 
@@ -44,8 +45,11 @@ export default function Parent(props) {
                                 <Route path='/editSchedule' exact>
                                     <EditSchedule/>
                                 </Route>
-                                <Route path='/updatePassword' exact>
-                                    <UpdatePassword/>
+                                <Route path='/updateStar' exact>
+                                    <UpdateStar/>
+                                </Route>
+                                {/* move the component inside to fix the can't find props.match issue */}
+                                <Route path='/detailPage/:id' exact component={DetailPage}>
                                 </Route>
                                 </>
                             )}

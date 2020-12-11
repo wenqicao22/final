@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import '../App.css'
 import {myContext} from './Context'
 import axios from 'axios'
+import logo from '../logo192.png'
 
 export default function Nav() {
     const style =  {
@@ -25,22 +26,40 @@ export default function Nav() {
 
     return (
         <nav>
+            {/* <img src={logo} alt="Logo" id="Logo" width="70px"/> */}
             <ul className="navList">
+            <img src={logo} alt="Logo" id="Logo" width="70px"/>
                 {
                     context ? (
                         <>
                             <Link style={style} onClick={logout} to='/logout' >
                                 <li>Log Out</li>
                             </Link>
-                            <Link style={style} to='/editEvent'>
-                                <li>Edit Event</li>
-                            </Link>
-                            <Link style={style} to='/starList'>
-                                <li>Star List</li>
-                            </Link>
-                            <Link style={style} to='/listEvent'>
-                                <li>List Event</li>
-                            </Link> 
+                            {context.managerOrStar==="manager" ?(
+                                <>
+                                <Link style={style} to='/editEvent'>
+                                    <li>Edit Event</li>
+                                </Link>
+                                <Link style={style} to='/starList'>
+                                    <li>Star List</li>
+                                </Link>
+                                <Link style={style} to='/listEvent'>
+                                    <li>List Event</li>
+                                </Link> 
+                                </>
+
+                            ):(
+                                <>
+                                <Link style={style} to='/editSchedule'>
+                                    <li>Edit Schedule</li>
+                                </Link>
+                                <Link style={style} to='/updateStar'>
+                                    <li>Profile</li>
+                                </Link>
+                                </>
+                            )
+                            }
+                            
                         </>
                     ) : (
                         <>

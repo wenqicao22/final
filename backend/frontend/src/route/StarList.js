@@ -31,9 +31,9 @@ export default function StarList() {
                 }
             });
             setData(filteredData)
-            console.log(filteredData)
+            
         })
-    },[])
+    },[data, context])
     if (context.managerOrStar !== "manager") {
         return (
             <div className="non-admin">
@@ -58,7 +58,8 @@ export default function StarList() {
         .then((res) => {
             const {message} = res.data
             const info = message["info"]
-            console.log("info:",info)
+            // console.log("info:",info)
+            // console.log("message:",message)
             if (info === "Star added"){
                 var newList = list
                 var newUserList = userList
@@ -86,42 +87,56 @@ export default function StarList() {
 
     return (
         <div className="container">
-           <h1>StarList</h1>
-           <div>
-               <input placeholder="name" type="text" onChange={(e) => setName(e.target.value)} />
-               <input placeholder="age" type="text" onChange={(e) => setAge(e.target.value)} />
-               <select id="gender" name="gender" onChange={updateGender}>
-                <option value="selectGender">Select Gender</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="other">Other</option>
-               </select>
-               <input type="submit" value="Add Star" onClick={addStar} />
+           <h2>Star List</h2>
+           <div className='forms'>
+                <ul>
+                    <li>
+                        <input placeholder="name" type="text" onChange={(e) => setName(e.target.value)} />
+                    </li>
+                    <li>
+                        <input placeholder="age" type="text" onChange={(e) => setAge(e.target.value)} />
+                    </li>
+                    <li>
+                        <select id="gender" name="gender" onChange={updateGender}>
+                            <option value="selectGender">Select Gender</option>
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </li>
+                    <li>
+                        <input type="submit" value="Add Star" onClick={addStar} />
+                    </li>
+                    <li>
+                        {list !==null && list.length !== 0 ? (
+                            <>
+                            {list.map((star, index) => 
+                            <div className="star-info" key={index}>
+                                star 
+                                <h3> {list[index]["name"]}</h3> has been added! Age: <h3>{list[index]["age"]}</h3>, Gender: <h3>{list[index]["gender"]}</h3>. The username is <h3>{userList[index]["username"]}</h3>, password is <h3>{userList[index]["password"]}</h3>
+                            </div>)}
+                            </>
+                        ) : (
+                            <div>
+                                No new star added
+                            </div>
+                        )
+                        }
+                    </li>
+               </ul>
             </div>
             <div className="star-list">
-                {list !==null && list.length !== 0 ? (
-                    <>
-                    {list.map((star, index) => 
-                    <div className="star-info" key={index}>
-                        star 
-                        <h3> {list[index]["name"]}</h3> has been added! Age: <h3>{list[index]["age"]}</h3>, Gender: <h3>{list[index]["gender"]}</h3>. The username is <h3>{userList[index]["username"]}</h3>, password is <h3>{userList[index]["password"]}</h3>
-                    </div>)}
-                    </>
-                ) : (
-                    <div>
-                        No new star added
-                    </div>
-                )
-                }
                 <div>
                     <h3>Star So Far:</h3>
-                        <table id="star-table">
-                            <tbody>
+                        <table id="star-table" className="tables">
+                            <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Age</th>
                                     <th>Gender</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                             {data.map((p, index) => 
 
                                 <tr key={index} id={index}>

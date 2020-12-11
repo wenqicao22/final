@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
 const passportLocal = require("passport-local").Strategy;
+const passportLocalMongoose = require('passport-local-mongoose')
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
@@ -13,8 +14,8 @@ const Star = require('./model/star')
 
 
 //rocess.env.MONGODB_URI
-mongoose.connect(
-  "mongodb+srv://wenqicao:caowenqi@cluster0.mjpjr.mongodb.net/<dbname>?retryWrites=true&w=majority",
+//"mongodb+srv://wenqicao:caowenqi@cluster0.mjpjr.mongodb.net/<dbname>?retryWrites=true&w=majority"
+mongoose.connect("mongodb+srv://wenqicao:caowenqi@cluster0.mjpjr.mongodb.net/<dbname>?retryWrites=true&w=majority"|| 'mongodb://localhost:4000',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -23,7 +24,7 @@ mongoose.connect(
 .then(() => console.log('mongoDB connected.'))
 .catch(err => console.log(err));;
 
-
+mongoose.set('useFindAndModify', false);
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(
@@ -53,6 +54,7 @@ app.use('/login', login)
 const register = require('./route/register')
 app.use('/register', register)
 const starList = require("./route/starList");
+const { time } = require("uniqid");
 app.use('/starList', starList)
 
 
@@ -101,7 +103,9 @@ app.get('/getallstar',  async (req, res) => {
   
   //get will send a user object in the request!!!
   const {username} = req.user
-  Star.find({manager: username}, (err, doc) => {
+  // console.log(req.user)
+  // const username="q"
+  await Star.find({manager: username}, (err, doc) => {
     if (err) console.error(err)
     const allStar = []
     if (doc !== null && doc.length !== 0) {
@@ -129,7 +133,7 @@ app.post('/addevent', async (req, res) => {
   const {time} = req.body
   const {star} = req.body
   const {isAccepted} = req.body
-  Event.findOne({manager: manager, name: name, time: time, star: star}, async(err, doc) => {
+  await Event.findOne({manager: manager, name: name, time: time, star: star}, async(err, doc) => {
     if (err) console.error(err)
     if (doc) {
       res.send("The event is alrady exist.")
@@ -147,11 +151,119 @@ app.post('/addevent', async (req, res) => {
   })
 })
 
+//get events by name for a specific star
+app.post('/getEventByName', async (req, res) => {
+  const {starName} = req.body
+  const {eventName} = req.body 
+  console.log(starName)
+  console.log(eventName)
+  await Event.find({star: starName, name: eventName}, async (err, doc) => {
+    if (err) console.error(err)
+    if (doc){
+      res.send({
+        message: "event found.",
+        data: doc
+      })
+    }else{
+      res.send({
+        message: "no event.",
+        data: null
+      })
+    }
+  })
+})
+
+//get event by event id
+app.post('/getEventById', async(req, res) => {
+  const {_id} = req.body
+  await Event.findOne({_id: _id}, (err, doc) => {
+    if(err) console.error(err)
+    if(doc) {
+      res.send({
+        message: "Event found.",
+        data: doc
+      })
+    }else {
+      res.send({
+        message: "No event.",
+        data: null
+      })
+    }
+  })
+})
+//fix the id issue since the id in different models will be different
+app.post('/acceptEvent', async(req, res) => {
+  const {_id} = req.body
+  await Event.findByIdAndUpdate({_id: _id}, {$set:{isAccepted: true}}
+  , (err, doc) => {
+    if (err) console.error(err)
+    if (doc){
+      res.send({
+        info:"Event accepted.",
+        data: doc})
+    }else{
+      res.send({
+        info:"Event Not found.",
+        data: null})
+    }
+  })
+})
+
+//update star info
+app.put('/updateStar', async(req, res) => {
+  const {name} = req.body
+  // const {age} = req.body
+  const {profile} = req.body
+  
+  console.log('profile:',profile)
+  console.log('profile:',name)
+  await Star.findOneAndUpdate({name:name},
+    {$set:{profile: profile}},{new: true, useFindAndModify: false},async (err, doc) => {
+      if (err) console.error(err)
+      if (doc){
+        console.log('doc',doc)
+         res.send({
+           message:"Updated.",
+           data:doc
+         })
+      }
+    })
+  
+})
+
+//find a star by name
+app.put('/getStar', async(req, res) => {
+  const {name} = req.body
+  await Star.findOne({name: name}, (err, doc) => {
+    if (err) console.error(err)
+    if (doc){
+      
+      res.send({
+        message:"Star found.",
+        star: doc
+      })
+    }else {
+      res.send("No star.")
+    }
+  })
+})
+
+// app.get('/checkEventStatus', async(req, res) => {
+//   await Event.find({}, (err, doc) => {
+//     if (err) console.error(err)
+//     if (doc) {
+//       res.send(doc)
+//     }else {
+//       res.send("No event.")
+//     }
+//   })
+// })
+
 
 const port = process.env.PORT || 4000;
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('frontend/build'));
-}
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(express.static('frontend/build'));
+// }
 app.listen(port, () => {
   console.log(`Server is on port ${port}`);
 });

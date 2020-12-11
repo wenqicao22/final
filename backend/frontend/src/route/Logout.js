@@ -14,7 +14,7 @@ export default function Logout() {
         })
     }
     return (
-        <div>
+        <div className="container">
         {context ? (
             <>
             <button onClick={logout}>Sign Out</button>

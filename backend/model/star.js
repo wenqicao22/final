@@ -13,6 +13,9 @@ const star = new mongoose.Schema({
     gender: {
         type:String,
         required:true},
+    profile: {
+        type:String,
+        default: null}
 })
 
 module.exports=mongoose.model("Star", star)
